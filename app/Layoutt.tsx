@@ -53,10 +53,7 @@ const Layout = ({ children }: any) => {
     <div className={`min-h-screen flex flex-col ${sidebarOpen ? 'pl-64' : 'pl-20'}`}>
       <Head>
         <title>AeronPay Dashboard</title>
-        <link rel="icon" href="/favicon.ico" />
-        {/* Font Awesome CDN */}
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-      </Head>
+       </Head>
 
       {/* Sidebar Overlay */}
       {sidebarOpen && (
@@ -254,7 +251,7 @@ const Layout = ({ children }: any) => {
         {/* Footer */}
         <footer className="bg-white py-4 border-t">
           <div className="container mx-auto px-6 text-center text-gray-500">
-            <span>Copyright © 2025. AeronPay. All rights reserved.</span>
+            <span>Copyright © 2025. Kashish India PVT LTD. All rights reserved.</span>
           </div>
         </footer>
       </div>

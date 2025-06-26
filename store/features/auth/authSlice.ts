@@ -1,11 +1,38 @@
 // store/features/authSlice.js
 import { createSlice } from '@reduxjs/toolkit';
-import { UserT } from '@/types/types';
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  mobileno: string;
+  password: string | null;
+  shopName: string | null;
+  streetAddress: string | null;
+  addressLine2: string | null;
+  city: string | null;
+  state: string | null;
+  pinCode: string | null;
+  businessInformation: string | null;
+  businessType: string | null;
+  bankName: string | null;
+  accountNumber: string | null;
+  ifscCode: string | null;
+  aadharCardNumber: string | null;
+  panCardNumber: string | null;
+  udhyamAadharNumber: string | null;
+  gstRegistrationNumber: string | null;
+  membershipPlan: string | null;
+  status: 'ACTIVE' | 'INACTIVE';
+  createdAt: string;
+  updatedAt: string;
+}
+
+
 
 
 export interface AuthState {
     token: string | null;
-    user: UserT | null;
+    user: User | null;
     isAuthenticated: boolean;
 }
 const initialState: AuthState = {
