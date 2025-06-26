@@ -19,6 +19,12 @@
   }
 }
 
+@layer utilities {
+  .transition-slow {
+    transition-duration: 500ms;
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
