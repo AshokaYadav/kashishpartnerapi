@@ -25,19 +25,19 @@ export const metadata: Metadata = {
       },
       {
         url: "/login/mainlogo.jpg",
-        type: "image/png",
+        type: "image/jpg",
         sizes: "16x16",
       },
       {
        url: "/login/mainlogo.jpg",
-        type: "image/png",
+        type: "image/jpg",
         sizes: "32x32",
       },
     ],
     apple: {
       url: "/login/mainlogo.jpg",
       sizes: "180x180",
-      type: "image/png",
+      type: "image/jpg",
     },
     shortcut: {
       url: "/login/mainlogo.jpg",
