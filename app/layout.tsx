@@ -20,27 +20,27 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/login/mainlogo.jpg",
+        url: "/mainlogo.jpg",
         type: "image/x-icon",
       },
       {
-        url: "/login/mainlogo.jpg",
+        url: "/mainlogo.jpg",
         type: "image/jpg",
         sizes: "16x16",
       },
       {
-       url: "/login/mainlogo.jpg",
+       url: "/mainlogo.jpg",
         type: "image/jpg",
         sizes: "32x32",
       },
     ],
     apple: {
-      url: "/login/mainlogo.jpg",
+      url: "/mainlogo.jpg",
       sizes: "180x180",
       type: "image/jpg",
     },
     shortcut: {
-      url: "/login/mainlogo.jpg",
+      url: "/mainlogo.jpg",
       type: "image/x-icon",
     },
   },
