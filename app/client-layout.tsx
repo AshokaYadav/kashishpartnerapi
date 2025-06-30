@@ -24,7 +24,6 @@ export default function ClientLayout({
   return (
     <Provider store={store}>
       <QueryProvider>
-        
         {children}
       </QueryProvider>
     </Provider>

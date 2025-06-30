@@ -35,13 +35,16 @@ const Layout = ({ children }: any) => {
   };
 
 
+const [hasCheckedAuth, setHasCheckedAuth] = useState(false);
 
-  useEffect(() => {
-    console.log(isAuthenticated);
-    if (!isAuthenticated) {
-      router.push('/Login');
-    }
-  }, [isAuthenticated]);
+useEffect(() => {
+  // Jaise hi component mount ho, hum bolte hain — auth check start ho gaya
+  setHasCheckedAuth(true);
+
+  if (hasCheckedAuth && !isAuthenticated) {
+    router.push('/Login');
+  }
+}, [isAuthenticated, hasCheckedAuth]);
 
   if (!isAuthenticated) {
     return <div>
