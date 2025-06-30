@@ -10,11 +10,11 @@ const page = () => {
    const isAuthenticated = useSelector((state:RootState) => state.auth.isAuthenticated);
    console.log(isAuthenticated);
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      router.replace('/Login');
-    }
-  }, [isAuthenticated]);
+  // useEffect(() => {
+  //   if (!isAuthenticated) {
+  //     router.replace('/Login');
+  //   }
+  // }, [isAuthenticated]);
   return (
     <div>page</div>
   )
