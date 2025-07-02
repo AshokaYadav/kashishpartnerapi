@@ -1,107 +1,152 @@
 'use client';
-import React from 'react';
+import FormModal from '@/components/FundRequest/FormModal';
+import useGetFund from '@/hooks/FundRequest/useGetFund';
+import usePostFund from '@/hooks/FundRequest/usePostFund';
+import { RootState } from '@/store/store';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 const Page = () => {
-  return (
-    <div>
-      <div className="max-w-6xl mx-auto bg-white shadow-xl rounded-3xl p-8 border border-blue-100 relative">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-3xl font-bold text-blue-500">Fund Request</h2>
-        </div>
+    const user = useSelector((state: RootState) => state.auth.user);
+    const [isOpen, setIsOpen] = useState(false);
 
-        {/* Form */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Deposited Amount */}
-          <FormField label="Deposited Amount">
-            <input
-              type="number"
-              placeholder="Enter amount"
-              className="w-full bg-transparent outline-none"
+    const [formData, setFormData] = useState({
+        user_id: user?.id || '',
+        deposite_amount: '',
+        payment_method: '',
+        bank_name: '',
+        bank_utr: '',
+        remark: '',
+        date: '',
+    });
+
+    const { mutate, isPending, data, error } = usePostFund();
+    const {
+        mutate: fundget,
+        isPending: fundPending,
+        data: fundata,
+        error: fundError,
+    } = useGetFund();
+
+    useEffect(() => {
+        if (user?.id) {
+            fundget(user.id);
+        }
+    }, [user?.id]);
+
+    const handleChange = (e: React.ChangeEvent<any>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        mutate(formData, {
+            onSuccess: () => {
+                setIsOpen(false);
+                handleReset();
+                if (user?.id) {
+                    fundget(user.id); // re-fetch after submit
+                }
+            },
+        });
+    };
+
+    const handleReset = () => {
+        setFormData({
+            user_id: user?.id || '',
+            deposite_amount: '',
+            payment_method: '',
+            bank_name: '',
+            bank_utr: '',
+            remark: '',
+            date: '',
+        });
+    };
+
+    const fund = fundata?.data?.data[0]; // 🟢 Only 1 object
+
+    return (
+        <div className="max-w-6xl mx-auto py-10 px-4 sm:px-6 lg:px-8 space-y-10">
+            {/* 🟦 Button */}
+
+
+            {/* 📝 Modal */}
+            <FormModal
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                onChange={handleChange}
+                onSubmit={handleSubmit}
+                onReset={handleReset}
+                isPending={isPending}
+                formData={formData}
+                data={data}
+                error={error}
             />
-          </FormField>
 
-          {/* Payment Method */}
-          <FormField label="Payment Method">
-            <select className="w-full bg-transparent outline-none">
-              <option>Select Payment Method</option>
-              <option>NEFT</option>
-              <option>IMPS</option>
-              <option>UPI</option>
-            </select>
-          </FormField>
+            {/* 🧾 Fund Details */}
+            <div className="bg-white shadow-xl rounded-2xl p-6 sm:p-8 space-y-6">
+                {/* 🟦 Heading */}
+                <div className="flex items-center justify-between">
+                    <h2 className="text-xl sm:text-2xl font-bold text-blue-800">
+                        Your Fund Request Details
+                    </h2>
 
-          {/* Date of Payment */}
-          <FormField label="Date of Payment">
-            <input type="date" className="w-full bg-transparent outline-none" />
-          </FormField>
+                    <button
+                        onClick={() => setIsOpen(true)}
+                        className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl shadow-lg hover:scale-105 transition duration-200"
+                    >
+                        Request Fund
+                    </button>
+                </div>
 
-          {/* Bank Name */}
-          <FormField label="Bank Name">
-            <select className="w-full bg-transparent outline-none">
-              <option>Select Bank</option>
-              <option>SBI</option>
-              <option>HDFC</option>
-              <option>ICICI</option>
-            </select>
-          </FormField>
+                {/* 🔁 Loading/Error Messages */}
+                {fundPending && <p className="text-gray-500 text-sm">Loading fund data...</p>}
+                {fundError && <p className="text-red-500 text-sm">Error fetching fund data.</p>}
 
-          {/* Account Details */}
-          <FormField label="Account Details">
-            <select className="w-full bg-transparent outline-none">
-              <option>Select Account</option>
-              <option>Account 1</option>
-              <option>Account 2</option>
-            </select>
-          </FormField>
+                {/* 📄 Fund Info */}
+                {fund ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-sm text-gray-800">
+                        <InfoCard label="Deposited Amount">₹{fund.deposite_amount}</InfoCard>
+                        <InfoCard label="Payment Method">{fund.payment_method}</InfoCard>
+                        <InfoCard label="Bank Name">{fund.bank_name}</InfoCard>
+                        <InfoCard label="Bank UTR">{fund.bank_utr}</InfoCard>
+                        <InfoCard label="Date">{fund.date}</InfoCard>
+                        <InfoCard label="Remark">{fund.remark}</InfoCard>
+                        <InfoCard label="Status">
+                            <span
+                                className={`px-3 py-1 rounded-full text-xs font-semibold ${fund.status === 'ACTIVE'
+                                        ? 'bg-green-100 text-green-700'
+                                        : 'bg-yellow-100 text-yellow-700'
+                                    }`}
+                            >
+                                {fund.status}
+                            </span>
+                        </InfoCard>
+                    </div>
+                ) : (
+                    <p className="text-gray-500 text-sm italic">No fund request found.</p>
+                )}
+            </div>
 
-          {/* Bank Reference / UTR */}
-          <FormField label="Bank Reference / UTR">
-            <input
-              type="text"
-              placeholder="Reference / UTR"
-              className="w-full bg-transparent outline-none"
-            />
-          </FormField>
-
-          {/* Remarks */}
-          <div className="md:col-span-2">
-            <FormField label="Remarks">
-              <textarea
-                rows={2}
-                placeholder="Enter any remarks"
-                className="w-full bg-transparent outline-none resize-none"
-              />
-            </FormField>
-          </div>
-
-          {/* Buttons */}
-          <div className="flex items-center space-x-4 mt-2">
-            <button className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-2 rounded-xl shadow hover:scale-105 transition">
-              Submit
-            </button>
-            <button className="bg-gray-300 text-gray-800 px-6 py-2 rounded-xl shadow hover:bg-gray-400 transition">
-              Reset
-            </button>
-          </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
-// 🔹 Reusable form field without icon
-const FormField = ({
-  label,
-  children,
+// 🔁 Stylish InfoCard
+const InfoCard = ({
+    label,
+    children,
 }: {
-  label: string;
-  children: React.ReactNode;
+    label: string;
+    children: React.ReactNode;
 }) => (
-  <div className="bg-white rounded-xl border border-gray-200 p-3 shadow-sm hover:shadow-md transition-all">
-    <label className="text-sm text-gray-500 font-semibold mb-1 block">{label}</label>
-    <div>{children}</div>
-  </div>
+    <div className="bg-gray-50 rounded-xl border border-gray-200 p-4 shadow-sm hover:shadow-md transition-all duration-150">
+        <div className="text-xs text-gray-500 font-semibold mb-1 uppercase tracking-wide">
+            {label}
+        </div>
+        <div className="text-base font-medium text-gray-900">{children}</div>
+    </div>
 );
 
 export default Page;

@@ -95,9 +95,9 @@ const Sidebar = ({ sidebarOpen, hoveredSidebar, toggleSidebar, setHoveredSidebar
                         </Link>
                     </li>
                     <li>
-                        <Link href="/giftcard" className={`flex items-center p-3 rounded-lg transition-all duration-200 ${sidebarOpen || hoveredSidebar ? 'px-4' : 'px-3 justify-center'} hover:bg-blue-50`}>
+                        <Link href="/developer" className={`flex items-center p-3 rounded-lg transition-all duration-200 ${sidebarOpen || hoveredSidebar ? 'px-4' : 'px-3 justify-center'} hover:bg-blue-50`}>
                             <FaGift className="text-lg min-w-[24px]" />
-                            {(sidebarOpen || hoveredSidebar) && <span className="ml-3 whitespace-nowrap">Gift Card</span>}
+                            {(sidebarOpen || hoveredSidebar) && <span className="ml-3 whitespace-nowrap">Developer</span>}
                         </Link>
                     </li>
                     <li>
