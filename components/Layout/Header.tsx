@@ -34,8 +34,8 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
                     <div className="relative group">
                         <div className='flex justify-end items-center gap-8'>
                             <p className="text-gray-700 font-medium text-sm">
-    Wallet Amount: <span className="text-blue-600 font-semibold">$14,000</span>
-  </p>
+                                Wallet Amount: <span className="text-blue-600 font-semibold">$14,000</span>
+                            </p>
                             <button className="flex items-center space-x-2">
                                 <Image
                                     src="/image.png"
