@@ -1,30 +1,41 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-type FilterOptions = {
-  fromDate?: string;
-  toDate?: string;
-  name?: string; // future use
-};
+interface DateFilterOptions<T> {
+  filteredData: T[];
+  fromDate: string;
+  toDate: string;
+  setFromDate: (date: string) => void;
+  setToDate: (date: string) => void;
+  applyFilters: () => void;
+}
 
-// T must have createdAt
-export const useFilters = <T extends { createdAt: string }>(data: T[]) => {
+export const useDateFilter = <T extends { createdAt: string }>(data: T[]): DateFilterOptions<T> => {
   const [filteredData, setFilteredData] = useState<T[]>(data);
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
 
-  console.log(filteredData);
+  // useEffect(() => {
+  //   setFilteredData(data);
+  // }, [data]);
 
-  const applyFilters = ({ fromDate, toDate }: FilterOptions) => {
+  const applyFilters = () => {
     const from = fromDate ? new Date(fromDate) : null;
     const to = toDate ? new Date(toDate) : null;
 
     const result = data.filter((item) => {
       const itemDate = new Date(item.createdAt);
-      const matchDate = (!from || itemDate >= from) && (!to || itemDate <= to);
-      return matchDate;
+      return (!from || itemDate >= from) && (!to || itemDate <= to);
     });
 
     setFilteredData(result);
   };
 
-  console.log(filteredData);
-  return { filteredData, applyFilters };
+  return {
+    filteredData,
+    fromDate,
+    toDate,
+    setFromDate,
+    setToDate,
+    applyFilters,
+  };
 };
