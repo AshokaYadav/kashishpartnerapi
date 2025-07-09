@@ -17,7 +17,7 @@ interface FormData {
   date: string;
 }
 
-const Page = () => {
+const Page = () => { 
   const user = useSelector((state: RootState) => state.auth.user);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -35,9 +35,9 @@ const Page = () => {
   const {
     mutate: fundget,
     isPending: fundPending,
-    data: fundata,
+    data: fundata,  
     error: fundError,
-  } = useGetFund();
+  } = useGetFund();   
 
   const funds = fundata?.data?.data || [];
 
@@ -77,7 +77,7 @@ const Page = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
-      <h2 className="font-bold text-blue-800">Fund Request History</h2>
+      <h2 className="font-bold  text-blue-800">Fund Request History</h2>
 
       <div className="flex justify-end">
         <button

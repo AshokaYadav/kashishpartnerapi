@@ -66,7 +66,8 @@ const OTPModal = ({
                     <span className="inline-block">
                         OTP Verification
                     </span>
-                </h2>        <p className="text-center text-gray-900 mb-8">We've sent a 6-digit code to your mobile</p>
+                </h2>
+                <p className="text-center text-gray-900 mb-8">We've sent a 6-digit code to your mobile</p>
 
                 <div className="flex justify-center space-x-3 mb-8">
                     {otp.map((digit, index) => (
