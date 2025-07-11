@@ -4,6 +4,9 @@ import { RootState } from '@/store/store';
 import React, { useEffect, useState, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import OTPModal from '../Login/components/OTPModal';
+import usePutDeveloper from '@/hooks/Developer/usePutDeveloper';
+import usePostDeveloper from '@/hooks/Developer/usePostOtp';
+import usePostVerifyDeveloper from '@/hooks/Developer/usePostVerifyOtp';
 
 const CredentialItem = ({ label, value }: { label: string; value: string | null }) => (
   <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-all">
@@ -17,11 +20,19 @@ const CredentialItem = ({ label, value }: { label: string; value: string | null 
 const Page = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   const { mutate, data, error, isPending } = useGetDeveloper();
+  const { mutate: IpApi } = usePutDeveloper();
+  const { mutate: IpOtpApi } = usePostDeveloper();
+  const { mutate: IpOtpVerifyApi, data: IpOtpVerifyData } = usePostVerifyDeveloper();
 
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [isEditingCallback, setIsEditingCallback] = useState(false);
   const [callbackValue, setCallbackValue] = useState('');
-  const inputRef = useRef<HTMLDivElement>(null); // 🔁 ref for outside click detection
+  const [clientSecretData, setClientSecretData] = useState<{
+    client_id: string;
+    client_secret: string;
+  } | null>(null);
+
+  const inputRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (user) mutate(user?.id);
@@ -49,8 +60,26 @@ const Page = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isEditingCallback]);
 
+  // ✅ When OTP verified successfully → store secret info
+  useEffect(() => {
+    if (
+      IpOtpVerifyData?.data?.UserCredential?.client_id &&
+      IpOtpVerifyData?.data?.UserCredential?.client_secret
+    ) {
+      setClientSecretData({
+        client_id: IpOtpVerifyData.data.UserCredential.client_id,
+        client_secret: IpOtpVerifyData.data.UserCredential.client_secret
+      });
+    }
+  }, [IpOtpVerifyData]);
+
   const handleOtpSubmit = (otp: string) => {
-    console.log("Submitted OTP:", otp);
+    if (user) {
+      IpOtpVerifyApi({
+        otp: otp,
+        mobileno: user.mobileno
+      });
+    }
     setShowOtpModal(false);
   };
 
@@ -66,39 +95,51 @@ const Page = () => {
 
   return (
     <div className="p-6">
-      {/* <div className="flex justify-end mb-6">
-        <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl shadow">
-          {credentials ? "Update API"  : "Create Api"}
-        </button>
-      </div> */}
-
       {credentials && (
         <div>
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Developer Credentials</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-
             <CredentialItem label="ID" value={credentials.id} />
             <CredentialItem label="User ID" value={credentials.user_id} />
             <CredentialItem label="Client ID" value={credentials.client_id} />
 
-            {/* Client Secret */}
+            {/* ✅ Client Secret section with conditional display */}
             <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-all">
               <p className="text-xs text-gray-500 font-semibold uppercase mb-1">Client Secret</p>
-              <button
-                onClick={() => setShowOtpModal(true)}
-                className="text-sm text-indigo-600 font-medium hover:underline"
-              >
-                View Secret (OTP Required)
-              </button>
+
+              {clientSecretData ? (
+                <>
+                  <p className="text-sm text-gray-800 font-medium">
+                    {/* <span className="block">Client ID: {clientSecretData.client_id}</span> */}
+                    <span className="block overflow-x-auto whitespace-nowrap">
+                      {clientSecretData.client_secret}
+                    </span>
+                  </p>
+
+                </>
+              ) : (
+                <button
+                  onClick={() => {
+                    setShowOtpModal(true);
+                    if (user) {
+                      IpOtpApi({
+                        mobileno: user.mobileno
+                      });
+                    }
+                  }}
+                  className="text-sm text-indigo-600 font-medium hover:underline"
+                >
+                  View Secret (OTP Required)
+                </button>
+              )}
             </div>
 
-            {/* ✅ Editable Callback field with click outside detection */}
+            {/* ✅ Editable Callback Field */}
             <div
               className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-all"
               ref={inputRef}
             >
               <p className="text-xs text-gray-500 font-semibold uppercase mb-1">Callback</p>
-
               {isEditingCallback ? (
                 <div className="flex items-center gap-2">
                   <input
@@ -110,9 +151,15 @@ const Page = () => {
                   />
                   <button
                     onClick={() => {
-                      console.log("Updated Callback:", callbackValue);
-                      setIsEditingCallback(false);
-                      // 🔁 Add API call here if needed
+                      if (user) {
+                        IpApi({
+                          id: user.id,
+                          payload: {
+                            ip: callbackValue
+                          }
+                        });
+                        setIsEditingCallback(false);
+                      }
                     }}
                     className="text-white bg-green-500 hover:bg-green-600 px-3 py-1 rounded"
                   >

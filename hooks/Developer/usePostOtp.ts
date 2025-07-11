@@ -1,10 +1,10 @@
-import { developerApi, developerPayload } from '@/apis/Developer'
+import { developerApi, developerOtpPayload, developerPayload } from '@/apis/Developer'
 import { useMutation } from '@tanstack/react-query'
 
 const usePostDeveloper = () => {
   const mutation = useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: developerPayload }) => {
-      return developerApi.developerPut(id, payload);
+    mutationFn: (payload:developerOtpPayload) => {
+      return developerApi.developerPostOtp(payload);
     }
   });
 

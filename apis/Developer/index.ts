@@ -1,9 +1,15 @@
 import { axiosInstance } from "@/lib/axios"
 
 export interface developerPayload {
-    callback: string,
     ip: string,
-    auto_create: boolean
+}
+export interface developerOtpPayload{
+    mobileno:string
+}
+
+export interface developerOtpVerifyPayload{
+    mobileno:string,
+    otp:string
 }
 
 export const developerApi = {
@@ -13,5 +19,12 @@ export const developerApi = {
 
     developerGet: (id: string) => {
         return axiosInstance.get(`api/credentials/${id}`);
-    }
+    },
+    developerPostOtp:(payload:developerOtpPayload)=>{
+        return axiosInstance.post('api/user/send-otp-client',payload)
+    },
+    developerPostOtpVerify:(payload:developerOtpVerifyPayload)=>{
+        return axiosInstance.post('api/user/verify-otp-client',payload)
+    },
+
 }
