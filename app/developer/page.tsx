@@ -7,6 +7,7 @@ import OTPModal from '../Login/components/OTPModal';
 import usePutDeveloper from '@/hooks/Developer/usePutDeveloper';
 import usePostDeveloper from '@/hooks/Developer/usePostOtp';
 import usePostVerifyDeveloper from '@/hooks/Developer/usePostVerifyOtp';
+import { useRouter } from 'next/navigation';
 
 const CredentialItem = ({ label, value }: { label: string; value: string | null }) => (
   <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-all">
@@ -23,6 +24,7 @@ const Page = () => {
   const { mutate: IpApi } = usePutDeveloper();
   const { mutate: IpOtpApi } = usePostDeveloper();
   const { mutate: IpOtpVerifyApi, data: IpOtpVerifyData } = usePostVerifyDeveloper();
+  const router=useRouter();
 
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [isEditingCallback, setIsEditingCallback] = useState(false);
@@ -45,6 +47,7 @@ const Page = () => {
   }, [data]);
 
   // ✅ Detect outside click and close input
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -97,7 +100,14 @@ const Page = () => {
     <div className="p-6">
       {credentials && (
         <div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Developer Credentials</h2>
+          <div className="flex justify-between items-center bg-white px-4 py-3 rounded shadow mb-6">
+            <h2 className="text-2xl font-bold text-gray-800">Developer Credentials</h2>
+
+            <button onClick={()=>router.push('/document')} className="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2 rounded transition duration-200">
+              Documentation
+            </button>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <CredentialItem label="ID" value={credentials.id} />
             <CredentialItem label="User ID" value={credentials.user_id} />
