@@ -24,10 +24,11 @@ const Page = () => {
   const { mutate: IpApi } = usePutDeveloper();
   const { mutate: IpOtpApi } = usePostDeveloper();
   const { mutate: IpOtpVerifyApi, data: IpOtpVerifyData } = usePostVerifyDeveloper();
-  const router=useRouter();
+  const router = useRouter();
 
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [isEditingCallback, setIsEditingCallback] = useState(false);
+  const [isEditingIp, setIsEditingIp] = useState(false);
   const [callbackValue, setCallbackValue] = useState('');
   const [clientSecretData, setClientSecretData] = useState<{
     client_id: string;
@@ -35,6 +36,7 @@ const Page = () => {
   } | null>(null);
 
   const inputRef = useRef<HTMLDivElement>(null);
+  const inputRef1 = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (user) mutate(user?.id);
@@ -62,6 +64,26 @@ const Page = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isEditingCallback]);
+
+
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isEditingIp &&
+        inputRef1.current &&
+        !inputRef1.current.contains(event.target as Node)
+      ) {
+        setIsEditingIp(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isEditingIp]);
+
+
+
 
   // ✅ When OTP verified successfully → store secret info
   useEffect(() => {
@@ -103,7 +125,7 @@ const Page = () => {
           <div className="flex justify-between items-center bg-white px-4 py-3 rounded shadow mb-6">
             <h2 className="text-2xl font-bold text-gray-800">Developer Credentials</h2>
 
-            <button onClick={()=>router.push('/document')} className="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2 rounded transition duration-200">
+            <button onClick={() => router.push('/document')} className="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2 rounded transition duration-200">
               Documentation
             </button>
           </div>
@@ -165,7 +187,7 @@ const Page = () => {
                         IpApi({
                           id: user.id,
                           payload: {
-                            ip: callbackValue
+                            callback: callbackValue
                           }
                         });
                         setIsEditingCallback(false);
@@ -185,6 +207,52 @@ const Page = () => {
                 </p>
               )}
             </div>
+
+
+
+            <div
+              className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-all"
+              ref={inputRef1}
+            >
+              <p className="text-xs text-gray-500 font-semibold uppercase mb-1">Ip</p>
+              {isEditingIp ? (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={callbackValue}
+                    onChange={(e) => setCallbackValue(e.target.value)}
+                    className="text-sm text-gray-800 border border-gray-300 rounded px-2 py-1 w-full"
+                    autoFocus
+                  />
+                  <button
+                    onClick={() => {
+                      if (user) {
+                        IpApi({
+                          id: user.id,
+                          payload: {
+                            ip: callbackValue
+                          }
+                        });
+                        setIsEditingIp(false);
+                      }
+                    }}
+                    className="text-white bg-green-500 hover:bg-green-600 px-3 py-1 rounded"
+                  >
+                    Save
+                  </button>
+                </div>
+              ) : (
+                <p
+                  onClick={() => setIsEditingIp(true)}
+                  className="text-sm text-indigo-600 font-medium hover:underline cursor-pointer"
+                >
+                  {callbackValue || <span className="text-gray-400 italic">Not Available</span>}
+                </p>
+              )}
+            </div>
+
+
+
           </div>
         </div>
       )}

@@ -1,8 +1,9 @@
 import { axiosInstance } from "@/lib/axios"
 
-export interface developerPayload {
-    ip: string,
-}
+export type developerPayload =
+  | { ip: string }
+  | { callback: string };
+
 export interface developerOtpPayload{
     mobileno:string
 }
