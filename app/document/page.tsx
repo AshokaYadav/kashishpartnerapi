@@ -60,6 +60,11 @@ export default function RechargeDoc() {
               <td className="p-2 border">Operator code (e.g., "AIRTEL")</td>
             </tr>
             <tr>
+              <td className="p-2 border">operatorCircle</td>
+              <td className="p-2 border">string</td>
+              <td className="p-2 border">Operator Circle (e.g., "RJ")</td>
+            </tr>
+            <tr>
               <td className="p-2 border">customerMobile</td>
               <td className="p-2 border">string</td>
               <td className="p-2 border">Customer's mobile number</td>
@@ -67,6 +72,8 @@ export default function RechargeDoc() {
           </tbody>
         </table>
       </section>
+
+
 
       {/* Method */}
       <section className="mb-6">
@@ -84,7 +91,7 @@ export default function RechargeDoc() {
       <section className="mb-6">
         <h2 className="text-xl font-semibold">✅ Example Request</h2>
         <pre className="bg-gray-100 p-3 rounded mt-2 text-sm">
-{`POST /api/recharge/recharge HTTP/1.1
+          {`POST /api/recharge/recharge HTTP/1.1
 Host: api.partner.kashishindiapvtltd.com
 Content-Type: application/x-www-form-urlencoded
 client_id: YOUR_CLIENT_ID
@@ -98,7 +105,7 @@ amount=100&operatorCode=AIRTEL&customerMobile=9876543210`}
       <section className="mb-6">
         <h2 className="text-xl font-semibold">📤 Success Response</h2>
         <pre className="bg-green-100 p-3 rounded mt-2 text-sm">
-{`{
+          {`{
   "status": "success",
   "message": "Recharge successful",
   "transactionId": "TXN123456"
@@ -110,7 +117,7 @@ amount=100&operatorCode=AIRTEL&customerMobile=9876543210`}
       <section className="mb-6">
         <h2 className="text-xl font-semibold">❌ Error Response</h2>
         <pre className="bg-red-100 p-3 rounded mt-2 text-sm">
-{`{
+          {`{
   "status": "failed",
   "message": "Invalid client credentials"
 }`}

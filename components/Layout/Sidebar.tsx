@@ -89,9 +89,9 @@ const Sidebar = ({ sidebarOpen, hoveredSidebar, toggleSidebar, setHoveredSidebar
                         </Link>
                     </li>
                     <li>
-                        <Link href="/usertransactions" className={`flex items-center p-3 rounded-lg transition-all duration-200 ${sidebarOpen || hoveredSidebar ? 'px-4' : 'px-3 justify-center'} hover:bg-blue-50`}>
+                        <Link href="/Report" className={`flex items-center p-3 rounded-lg transition-all duration-200 ${sidebarOpen || hoveredSidebar ? 'px-4' : 'px-3 justify-center'} hover:bg-blue-50`}>
                             <FaCircleUser className="text-lg min-w-[24px]" />
-                            {(sidebarOpen || hoveredSidebar) && <span className="ml-3 whitespace-nowrap">Ledger Report</span>}
+                            {(sidebarOpen || hoveredSidebar) && <span className="ml-3 whitespace-nowrap">Report</span>}
                         </Link>
                     </li>
                     <li>

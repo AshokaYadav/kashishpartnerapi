@@ -7,9 +7,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { logout } from '@/store/features/auth/authSlice';
 import { useRouter } from 'next/navigation';
+import useGetProfile from '@/hooks/Profile/useGetProfile';
+import { useEffect } from 'react';
 
 const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
     const user = useSelector((state: RootState) => state.auth.user);
+    const { mutate, isPending, data, error } = useGetProfile();
     const dispatch = useDispatch();
     const router = useRouter();
 
@@ -17,6 +20,19 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
         dispatch(logout());
         router.push('/login');
     };
+
+    
+    
+      useEffect(() => {
+        if (user?.id) {
+          mutate(user.id);
+        }
+      }, [user?.id]);
+
+      useEffect(()=>{
+        console.log(data?.data[0].UserWallets[0].balance)
+      },[data])
+    
 
     return (
         <header className="bg-white shadow-sm  z-30 sticky top-0">
@@ -34,7 +50,7 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
                     <div className="relative group">
                         <div className='flex justify-end items-center gap-8'>
                             <p className="text-gray-700 font-medium text-sm">
-                                Wallet Amount: <span className="text-blue-600 font-semibold">$14,000</span>
+                                Wallet Amount: <span className="text-blue-600 font-semibold">₹ {data?.data[0].UserWallets[0].balance}</span>
                             </p>
                             <button className="flex items-center space-x-2">
                                 <Image
