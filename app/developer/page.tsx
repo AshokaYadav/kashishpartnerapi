@@ -30,7 +30,7 @@ const Page = () => {
   const [isEditingCallback, setIsEditingCallback] = useState(false);
   const [isEditingIp, setIsEditingIp] = useState(false);
   const [callbackValue, setCallbackValue] = useState('');
-  const [ipValue, setIpValue] = useState('');
+  const [ip, setip] = useState('');
   const [clientSecretData, setClientSecretData] = useState<{
     client_id: string;
     client_secret: string;
@@ -220,8 +220,8 @@ const Page = () => {
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
-                    value={ipValue}
-                    onChange={(e) => setIpValue(e.target.value)}
+                    value={ip}
+                    onChange={(e) => setip(e.target.value)}
                     className="text-sm text-gray-800 border border-gray-300 rounded px-2 py-1 w-full"
                     autoFocus
                   />
@@ -231,7 +231,7 @@ const Page = () => {
                         IpApi({
                           id: user.id,
                           payload: {
-                            ip: ipValue
+                            ip: ip
                           }
                         });
                         setIsEditingIp(false);
@@ -247,7 +247,7 @@ const Page = () => {
                   onClick={() => setIsEditingIp(true)}
                   className="text-sm text-indigo-600 font-medium hover:underline cursor-pointer"
                 >
-                  {ipValue || <span className="text-gray-400 italic">Not Available</span>}
+                  {ip || <span className="text-gray-400 italic">Not Available</span>}
                 </p>
               )}
             </div>
