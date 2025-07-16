@@ -67,6 +67,11 @@ const Page = () => {
   }, [isEditingCallback]);
 
 
+  useEffect(() => {
+    if (data?.data?.data?.[0]?.ip) {
+      setip(data.data.data[0].ip);
+    }
+  }, [data]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
