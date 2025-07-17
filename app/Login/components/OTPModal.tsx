@@ -49,8 +49,8 @@ const OTPModal = ({
     const handleSubmit = () => {
         const fullOtp = otp.join('');
         if (fullOtp.length === 6) {
-            alert('kkkkk   kkkk')
-            console.log(onSubmit);
+            // alert('kkkkk   kkkk')
+            // console.log(onSubmit);
             onSubmit(fullOtp);
         } else {
             alert('Please enter complete OTP');

@@ -1,8 +1,8 @@
 'use client'
-import useGetDeveloper from '@/hooks/Developer/useGetDeveloper'
+import useGetDeveloper from '@/hooks/Developer/useGetDeveloper';
 import { RootState } from '@/store/store';
-import React, { useEffect, useState, useRef } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect, useState, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import OTPModal from '../Login/components/OTPModal';
 import usePutDeveloper from '@/hooks/Developer/usePutDeveloper';
 import usePostDeveloper from '@/hooks/Developer/usePostOtp';
@@ -36,12 +36,18 @@ const Page = () => {
     client_secret: string;
   } | null>(null);
 
+  const [otpType, setOtpType] = useState<'secret' | 'ip' | null>(null);
+
+
+  const [clientSecretIp,setClientSecretIp]=useState(true);
+  const [showIpModal,setShowIpModal]=useState(false);
+
   const inputRef = useRef<HTMLDivElement>(null);
   const inputRef1 = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (user) mutate(user?.id);
-  }, []);
+  }, []);  
 
   useEffect(() => {
     if (data?.data?.data?.[0]?.callback) {
@@ -92,27 +98,46 @@ const Page = () => {
 
 
   // ✅ When OTP verified successfully → store secret info
-  useEffect(() => {
-    if (
-      IpOtpVerifyData?.data?.UserCredential?.client_id &&
-      IpOtpVerifyData?.data?.UserCredential?.client_secret
-    ) {
+ useEffect(() => {
+  if (
+    IpOtpVerifyData?.data?.UserCredential?.client_id &&
+    IpOtpVerifyData?.data?.UserCredential?.client_secret
+  ) {
+    if (otpType === 'secret') {
       setClientSecretData({
         client_id: IpOtpVerifyData.data.UserCredential.client_id,
-        client_secret: IpOtpVerifyData.data.UserCredential.client_secret
+        client_secret: IpOtpVerifyData.data.UserCredential.client_secret,
       });
+    } else if (otpType === 'ip') {
+      setClientSecretIp(false); // ✅ IP access allowed
     }
-  }, [IpOtpVerifyData]);
+    setOtpType(null); // reset after handled
+  }
+}, [IpOtpVerifyData]);
+
 
   const handleOtpSubmit = (otp: string) => {
-    if (user) {
-      IpOtpVerifyApi({
-        otp: otp,
-        mobileno: user.mobileno
-      });
-    }
-    setShowOtpModal(false);
-  };
+  if (user) {
+    setOtpType('secret'); // ✅ set type
+    IpOtpVerifyApi({
+      otp,
+      mobileno: user.mobileno,
+    });
+  }
+  setShowOtpModal(false);
+};
+
+const handleIpOtpSubmit = (otp: string) => {
+  if (user) {
+    setOtpType('ip'); // ✅ set type
+    IpOtpVerifyApi({
+      otp,
+      mobileno: user.mobileno,
+    });
+  }
+  setShowIpModal(false);
+};
+
 
   const handleOtpResend = () => {
     console.log("Resend OTP clicked");
@@ -216,46 +241,65 @@ const Page = () => {
 
 
 
-            <div
-              className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-all"
-              ref={inputRef1}
-            >
-              <p className="text-xs text-gray-500 font-semibold uppercase mb-1">Ip</p>
-              {isEditingIp ? (
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={ip}
-                    onChange={(e) => setip(e.target.value)}
-                    className="text-sm text-gray-800 border border-gray-300 rounded px-2 py-1 w-full"
-                    autoFocus
-                  />
-                  <button
-                    onClick={() => {
-                      if (user) {
-                        IpApi({
-                          id: user.id,
-                          payload: {
-                            ip: ip
-                          }
-                        });
-                        setIsEditingIp(false);
-                      }
-                    }}
-                    className="text-white bg-green-500 hover:bg-green-600 px-3 py-1 rounded"
+
+            {clientSecretIp ? (
+               <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-all">
+              <p className="text-xs text-gray-500 font-semibold uppercase mb-1">Ip Secret</p>
+              <button
+                onClick={() => {
+                  setShowIpModal(true);
+                  if (user) {
+                    IpOtpApi({
+                      mobileno: user.mobileno
+                    });
+                  }
+                }}
+                className="text-sm text-indigo-600 font-medium hover:underline"
+              >
+                View Ip (OTP Required)
+              </button>
+              </div>
+            ) : (
+              <div
+                className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-all"
+                ref={inputRef1}
+              >
+                <p className="text-xs text-gray-500 font-semibold uppercase mb-1">Ip</p>
+                {isEditingIp ? (
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={ip}
+                      onChange={(e) => setip(e.target.value)}
+                      className="text-sm text-gray-800 border border-gray-300 rounded px-2 py-1 w-full"
+                      autoFocus
+                    />
+                    <button
+                      onClick={() => {
+                        if (user) {
+                          IpApi({
+                            id: user.id,
+                            payload: {
+                              ip: ip
+                            }
+                          });
+                          setIsEditingIp(false);
+                        }
+                      }}
+                      className="text-white bg-green-500 hover:bg-green-600 px-3 py-1 rounded"
+                    >
+                      Save
+                    </button>
+                  </div>
+                ) : (
+                  <p
+                    onClick={() => setIsEditingIp(true)}
+                    className="text-sm text-indigo-600 font-medium hover:underline cursor-pointer"
                   >
-                    Save
-                  </button>
-                </div>
-              ) : (
-                <p
-                  onClick={() => setIsEditingIp(true)}
-                  className="text-sm text-indigo-600 font-medium hover:underline cursor-pointer"
-                >
-                  {ip || <span className="text-gray-400 italic">Not Available</span>}
-                </p>
-              )}
-            </div>
+                    {ip || <span className="text-gray-400 italic">Not Available</span>}
+                  </p>
+                )}
+              </div>)}
 
 
 
@@ -268,6 +312,14 @@ const Page = () => {
         isOpen={showOtpModal}
         onClose={() => setShowOtpModal(false)}
         onSubmit={handleOtpSubmit}
+        onResend={handleOtpResend}
+      />
+
+        {/* ✅ OTP Modal */}
+      <OTPModal
+        isOpen={showIpModal}
+        onClose={() => setShowIpModal(false)}
+        onSubmit={handleIpOtpSubmit}
         onResend={handleOtpResend}
       />
     </div>
