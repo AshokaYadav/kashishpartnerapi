@@ -41,7 +41,8 @@ const TransactionsPage = () => {
   const [toDate, setToDate] = useState('');
 
   useEffect(() => {
-    if (user?.id) mutate('7c4f19aa-fb1e-406d-b6ae-f87419e1af89');
+    console.log(user?.id)
+    if (user?.id) mutate(user?.id);
   }, [user, mutate]);
 
   return (

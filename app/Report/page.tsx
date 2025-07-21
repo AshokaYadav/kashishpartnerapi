@@ -46,7 +46,7 @@ const WalletHistoryPage = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">After</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Via</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th> */}
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
               </tr>
             </thead>
@@ -59,7 +59,7 @@ const WalletHistoryPage = () => {
                   <td className="px-6 py-4 text-sm text-gray-500">₹{item.amount}</td>
                   <td className="px-6 py-4 text-sm text-gray-500">₹{item.after_balance}</td>
                   <td className="px-6 py-4 text-sm text-gray-500">{item.via}</td>
-                  <td className="px-6 py-4">
+                  {/* <td className="px-6 py-4">
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${item.status === 'SUCCESS'
                       ? 'bg-green-100 text-green-800'
                       : item.status === 'FAILED'
@@ -68,7 +68,7 @@ const WalletHistoryPage = () => {
                       }`}>
                       {item.status}
                     </span>
-                  </td>
+                  </td> */}
                   <td className="px-6 py-4 text-sm text-gray-500">
                     {new Date(item.createdAt).toLocaleDateString('en-GB')}<br />
                     <span className="text-xs text-gray-400">
