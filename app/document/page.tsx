@@ -92,12 +92,12 @@ export default function RechargeDoc() {
         <h2 className="text-xl font-semibold">✅ Example Request</h2>
         <pre className="bg-gray-100 p-3 rounded mt-2 text-sm">
           {`POST /api/recharge/recharge HTTP/1.1
-Host: api.partner.kashishindiapvtltd.com
-Content-Type: application/x-www-form-urlencoded
-client_id: YOUR_CLIENT_ID
-client_secret: YOUR_CLIENT_SECRET
+            Host: api.partner.kashishindiapvtltd.com
+            Content-Type: application/x-www-form-urlencoded
+            client_id: YOUR_CLIENT_ID
+            client_secret: YOUR_CLIENT_SECRET
 
-amount=100&operatorCode=AIRTEL&customerMobile=9876543210`}
+            amount=100&operatorCode=AIRTEL&customerMobile=9876543210`}
         </pre>
       </section>
 
@@ -106,10 +106,10 @@ amount=100&operatorCode=AIRTEL&customerMobile=9876543210`}
         <h2 className="text-xl font-semibold">📤 Success Response</h2>
         <pre className="bg-green-100 p-3 rounded mt-2 text-sm">
           {`{
-  "status": "success",
-  "message": "Recharge successful",
-  "transactionId": "TXN123456"
-}`}
+            "status": "success",
+            "message": "Recharge successful",
+            "transactionId": "TXN123456"
+          }`}
         </pre>
       </section>
 
@@ -118,12 +118,19 @@ amount=100&operatorCode=AIRTEL&customerMobile=9876543210`}
         <h2 className="text-xl font-semibold">❌ Error Response</h2>
         <pre className="bg-red-100 p-3 rounded mt-2 text-sm">
           {`{
-  "status": "failed",
-  "message": "Invalid client credentials"
+            "status": "failed",
+            "message": "Invalid client credentials"
+          }`}
+        </pre>
+      </section>
+      <section className="mb-6">
+        <h2 className="text-xl font-semibold">❌ Pending Response - <span>status code: 400</span></h2>
+        <pre className="bg-red-100 p-3 rounded mt-2 text-sm">
+          {`{
+  "status": "pending"
 }`}
         </pre>
       </section>
-
       {/* Notes */}
       <section className="mb-6">
         <h2 className="text-xl font-semibold">📌 Notes</h2>
