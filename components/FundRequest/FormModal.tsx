@@ -13,14 +13,17 @@ interface FormModalProps {
         deposite_amount: string;
         payment_method: string;
         bank_name: string;
+        account_number: string;
         bank_utr: string;
         remark: string;
         date: string;
     };
     data: any;
     error: any;
+    uniqueBankNames: string[];
+    setSelectedBank: (bankName: string) => void;
+    accountNumbers:string[];
 }
-
 const FormModal: React.FC<FormModalProps> = ({
     isOpen,
     onClose,
@@ -31,6 +34,9 @@ const FormModal: React.FC<FormModalProps> = ({
     formData,
     data,
     error,
+    uniqueBankNames,
+    setSelectedBank,
+    accountNumbers
 }) => {
     if (!isOpen) return null;
 
@@ -86,7 +92,7 @@ const FormModal: React.FC<FormModalProps> = ({
                         />
                     </FormField>
 
-                    <FormField label="Bank Name">
+                    {/* <FormField label="Bank Name">
                         <select
                             name="bank_name"
                             value={formData.bank_name}
@@ -97,6 +103,42 @@ const FormModal: React.FC<FormModalProps> = ({
                             <option>SBI</option>
                             <option>HDFC</option>
                             <option>ICICI</option>
+                        </select>
+                    </FormField> */}
+
+                    <FormField label="Bank Name">
+                        <select
+                            name="bank_name"
+                            value={formData.bank_name}
+                            onChange={(e) => {
+                                onChange(e); // update formData
+                                setSelectedBank(e.target.value); // update selectedBank in parent
+                            }}
+                            className="w-full bg-white/60 border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400"
+                        >
+                            <option value="">Select Bank Name</option>
+                            {uniqueBankNames.map((bank, index) => (
+                                <option key={index} value={bank}>
+                                    {bank}
+                                </option>
+                            ))}
+                        </select>
+                    </FormField>
+
+
+                    <FormField label="Bank List">
+                        <select
+                            name="account_number"
+                            value={formData.account_number}
+                            onChange={onChange}
+                            className="w-full bg-white/60 border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400"
+                        >
+                            <option value="">Select Account</option>
+                             {accountNumbers.map((account, index) => (
+                                <option key={index} value={account}>
+                                    {account}
+                                </option>
+                            ))}
                         </select>
                     </FormField>
 

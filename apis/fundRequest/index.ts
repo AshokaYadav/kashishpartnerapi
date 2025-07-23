@@ -1,4 +1,4 @@
-import { axiosInstance } from "@/lib/axios"
+import { axiosInstance } from "@/lib/axios";
 
 
 export interface DepositDetails {
@@ -15,6 +15,9 @@ export interface DepositDetails {
 export const fundRequest={
     getFundRequest:(id:string)=>{
        return  axiosInstance.get(`/api/fund/user_id/${id}`)
+    },
+     getBankRequest:()=>{
+       return  axiosInstance.get(`/api/bank`)
     },
     postFundRequest:(payload:DepositDetails)=>{
         return axiosInstance.post('/api/fund',payload)

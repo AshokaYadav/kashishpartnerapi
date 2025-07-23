@@ -6,16 +6,31 @@ import useGetFund from '@/hooks/FundRequest/useGetFund';
 import usePostFund from '@/hooks/FundRequest/usePostFund';
 import FormModal from '@/components/FundRequest/FormModal';
 import FundTable from '@/components/FundRequest/FundTable';
+import useGetBank from '@/hooks/FundRequest/useGetBank';
 
 interface FormData {
   user_id: string;
   deposite_amount: string;
   payment_method: string;
   bank_name: string;
+    account_number: string;
   bank_utr: string;
   remark: string;
   date: string;
 }
+interface Bank {
+  id: string;
+  bank_name: string;
+  account_holder_name: string;
+  account_number: string;
+  branch: string;
+  ifsc_code: string;
+  upi_id: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 
 const Page = () => { 
   const user = useSelector((state: RootState) => state.auth.user);
@@ -26,6 +41,7 @@ const Page = () => {
     deposite_amount: '',
     payment_method: '',
     bank_name: '',
+    account_number:'',
     bank_utr: '',
     remark: '',
     date: '',
@@ -39,13 +55,63 @@ const Page = () => {
     error: fundError,
   } = useGetFund();   
 
-  const funds = fundata?.data?.data || [];
+  const {
+    mutate: bankget,
+    isPending: benkPending,
+    data: bankdata,  
+    error: bankError,
+  } = useGetBank();   
+
+   const [selectedBank, setSelectedBank] = useState<string>("");
+
+
+
+    const funds = fundata?.data?.data || [];
+
+
+
+
+  useEffect(() => {
+    if (user?.id) {
+      fundget(user.id);
+      bankget();
+    }
+  }, [user?.id, fundget]);
+
+  
+
+//  const uniqueBankNames: string[] = [
+//   ...new Set(bankdata?.data?.data.map((item: Bank) => item.bank_name))
+// ];
+
+const uniqueBankNames: string[] = Array.from(
+  new Set(
+    (bankdata?.data?.data ?? []).map((item:Bank) => item.bank_name)
+  )
+);
+
+const accountsForSelectedBank =  (bankdata?.data?.data ?? []).filter(
+  (item:Bank) => item.bank_name === selectedBank
+);
+
+const accountNumbers = accountsForSelectedBank.map((item:Bank) => item.account_number);
+
+
+console.log(uniqueBankNames);
+
+  
 
   useEffect(() => {
     if (user?.id) {
       fundget(user.id);
     }
   }, [user?.id, fundget]);
+
+  useEffect(()=>{
+    console.log(selectedBank);
+    console.log(accountNumbers);
+    console.log(formData)
+  },[selectedBank,formData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -71,6 +137,7 @@ const Page = () => {
       bank_name: '',
       bank_utr: '',
       remark: '',
+      account_number:'',
       date: '',
     });
   };
@@ -98,6 +165,10 @@ const Page = () => {
         formData={formData}
         data={data}
         error={error}
+        uniqueBankNames={uniqueBankNames}
+        setSelectedBank={setSelectedBank}
+        accountNumbers={accountNumbers}
+        
       />
 
       <div className="bg-white shadow-xl rounded-2xl p-6 sm:p-8 space-y-6">
